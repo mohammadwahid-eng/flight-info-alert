@@ -2,3 +2,24 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.fia-form-group {
+    display: grid;
+    padding: 8px 0;
+}
+
+.fia-form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.fia-form-group .fia-form-control {
+    min-height: 34px !important;
+}
+
+.fia-form-group .fia-help-block {
+    margin-top: 2px;
+    color: gray;
+    font-size: 90%;
+    font-style: italic;
+}

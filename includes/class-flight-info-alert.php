@@ -156,6 +156,11 @@ class Flight_Info_Alert {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_admin, 'custom_post_types' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'custom_meta_box' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'custom_post_save' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu_page' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_menu_settings' );
 
 	}
 
