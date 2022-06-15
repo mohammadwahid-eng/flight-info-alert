@@ -97,6 +97,7 @@ class Flight_Info_Alert_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/flight-info-alert-admin.js', array( 'jquery' ), $this->version, false );
+		wp_localize_script( $this->plugin_name, 'fia_api_fetch', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce( $this->plugin_name ) ) );
 
 	}
 
@@ -146,94 +147,98 @@ class Flight_Info_Alert_Admin {
 	}
 
 	public function fia_metabox_html( $post ) {
-
-		$fields = array(
-			'description' => '',
-			'iataCarrierCode' => '',
-			'iataCarrierCode' => '',
-			'icaoCarrierCode' => '',
-			'flightNumber' => '',
-			'fromFlight' => '',
-			'toFlight' => '',
+		$data = array(
+			'accountId'        => '',
+			'alertId'          => '',
+			'description'      => '',
+			'iataCarrierCode'  => '',
+			'iataCarrierCode'  => '',
+			'icaoCarrierCode'  => '',
+			'flightNumber'     => '',
+			'fromFlight'       => '',
+			'toFlight'         => '',
 			'departureAirport' => '',
-			'arrivalAirport' => '',
-			'departureDate' => '',
-			'alertType' => '',
-			'active' => '',
-			'content' => '',
+			'arrivalAirport'   => '',
+			'departureDate'    => '',
+			'alertType'        => '',
+			'active'           => '',
+			'content'          => '',
 		);
 
-		foreach( $fields as $key => $value ) {
-			$fields[ $key ] = get_post_meta( $post->ID, $key, true ) ?? '';
+		foreach( $data as $key => $value ) {
+			$data[ $key ] = get_post_meta( $post->ID, $key, true ) ?? '';
 		}
 		
 		wp_nonce_field( "flight-info-alert-metabox", "flight-info-alert-metabox-nonce" );
 		?>
+			<input type="hidden" name="accountId" value="<?php echo $data[ 'accountId' ]; ?>">
+			<input type="hidden" name="alertId" value="<?php echo $data[ 'alertId' ]; ?>">
+
 			<div class="fia-form-group">
-				<label for="description">Description</label>
-				<textarea class="fia-form-control" id="description" name="description" rows="3"><?php echo $fields[ 'description' ]; ?></textarea>
-				<div class="fia-help-block">Describe the purpose of the alert.</div>
+				<label for="description"><?php _e( "Description", "flight-info-alert" ) ?></label>
+				<textarea class="fia-form-control" id="description" name="description" rows="3"><?php echo $data[ 'description' ]; ?></textarea>
+				<div class="fia-help-block"><?php _e("Describe the purpose of the alert.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="iataCarrierCode">IATA Carrier Code</label>
-				<input type="text" class="fia-form-control" id="iataCarrierCode" name="iataCarrierCode" value="<?php echo $fields[ 'iataCarrierCode' ]; ?>">
-				<div class="fia-help-block">A two-character code assigned by the IATA to international airlines.</div>
+				<label for="iataCarrierCode"><?php _e( "IATA Carrier Code", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="iataCarrierCode" name="iataCarrierCode" value="<?php echo $data[ 'iataCarrierCode' ]; ?>">
+				<div class="fia-help-block"><?php _e("A two-character code assigned by the IATA to international airlines.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="icaoCarrierCode">ICAO Carrier Code</label>
-				<input type="text" class="fia-form-control" id="icaoCarrierCode" name="icaoCarrierCode" value="<?php echo $fields[ 'icaoCarrierCode' ]; ?>">
-				<div class="fia-help-block">A three-character code assigned by the ICAO to international airlines.</div>
+				<label for="icaoCarrierCode"><?php _e( "ICAO Carrier Code", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="icaoCarrierCode" name="icaoCarrierCode" value="<?php echo $data[ 'icaoCarrierCode' ]; ?>">
+				<div class="fia-help-block"><?php _e("A three-character code assigned by the ICAO to international airlines.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="flightNumber">Flight Number</label>
-				<input type="text" class="fia-form-control" id="flightNumber" name="flightNumber" value="<?php echo $fields[ 'flightNumber' ]; ?>">
-				<div class="fia-help-block">A numeric part (up to four digits) of a flight designator.</div>
+				<label for="flightNumber"><?php _e( "Flight Number", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="flightNumber" name="flightNumber" value="<?php echo $data[ 'flightNumber' ]; ?>">
+				<div class="fia-help-block"><?php _e("A numeric part (up to four digits) of a flight designator.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="fromFlight">Flight From</label>
-				<input type="text" class="fia-form-control" id="fromFlight" name="fromFlight" value="<?php echo $fields[ 'fromFlight' ]; ?>">
-				<div class="fia-help-block">A numeric part (up to four digits) of a flight designator.</div>
+				<label for="fromFlight"><?php _e( "Flight From", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="fromFlight" name="fromFlight" value="<?php echo $data[ 'fromFlight' ]; ?>">
+				<div class="fia-help-block"><?php _e("A numeric part (up to four digits) of a flight designator.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="toFlight">Flight To</label>
-				<input type="text" class="fia-form-control" id="toFlight" name="toFlight" value="<?php echo $fields[ 'toFlight' ]; ?>">
-				<div class="fia-help-block">A numeric part (up to four digits) of a flight designator.</div>
+				<label for="toFlight"><?php _e( "Flight To", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="toFlight" name="toFlight" value="<?php echo $data[ 'toFlight' ]; ?>">
+				<div class="fia-help-block"><?php _e("A numeric part (up to four digits) of a flight designator.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="departureAirport">Departure Airport</label>
-				<input type="text" class="fia-form-control" id="departureAirport" name="departureAirport" value="<?php echo $fields[ 'departureAirport' ]; ?>">
-				<div class="fia-help-block">A Three-letter code assigned by the IATA to an airport location representing departure airport.</div>
+				<label for="departureAirport"><?php _e( "Departure Airport", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="departureAirport" name="departureAirport" value="<?php echo $data[ 'departureAirport' ]; ?>">
+				<div class="fia-help-block"><?php _e("A Three-letter code assigned by the IATA to an airport location representing departure airport.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="arrivalAirport">Arrival Airport</label>
-				<input type="text" class="fia-form-control" id="arrivalAirport" name="arrivalAirport" value="<?php echo $fields[ 'arrivalAirport' ]; ?>">
-				<div class="fia-help-block">A Three-letter code assigned by the IATA to an airport location representing arrival airport.</div>
+				<label for="arrivalAirport"><?php _e( "Arrival Airport", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="arrivalAirport" name="arrivalAirport" value="<?php echo $data[ 'arrivalAirport' ]; ?>">
+				<div class="fia-help-block"><?php _e("A Three-letter code assigned by the IATA to an airport location representing arrival airport.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="alertType">Alert Type</label>
+				<label for="alertType"><?php _e( "Alert Type", "flight-info-alert" ); ?></label>
 				<select class="fia-form-control" id="alertType" name="alertType">
 					<option value="">Select an option</option>
-					<option value="Global" <?php selected( $fields[ 'alertType' ], 'Global' ); ?>>Global</option>
-					<option value="Carrier" <?php selected( $fields[ 'alertType' ], 'Carrier' ); ?>>Carrier</option>
-					<option value="Port" <?php selected( $fields[ 'alertType' ], 'Port' ); ?>>Port</option>
+					<option value="global" <?php selected( $data[ 'alertType' ], 'global' ); ?>>Global</option>
+					<option value="carrier" <?php selected( $data[ 'alertType' ], 'carrier' ); ?>>Carrier</option>
+					<option value="port" <?php selected( $data[ 'alertType' ], 'port' ); ?>>Port</option>
 				</select>
 			</div>
 			<div class="fia-form-group">
-				<label for="active">Active</label>
+				<label for="active"><?php _e( "Active", "flight-info-alert" ); ?></label>
 				<select class="fia-form-control" id="active" name="active">
 					<option value="">Select an option</option>
-					<option value="true" <?php selected( $fields[ 'active' ], 'true' ); ?>>Yes</option>
-					<option value="false" <?php selected( $fields[ 'active' ], 'false' ); ?>>No</option>
+					<option value="true" <?php selected( $data[ 'active' ], 'true' ); ?>>Yes</option>
+					<option value="false" <?php selected( $data[ 'active' ], 'false' ); ?>>No</option>
 				</select>
 			</div>
 			<div class="fia-form-group">
-				<label for="content">Content</label>
-				<input type="text" class="fia-form-control" id="content" name="content" value="<?php echo $fields[ 'content' ]; ?>">
-				<div class="fia-help-block">Additional data is included in the API response in the <strong>Premium Content group</strong>.</div>
+				<label for="content"><?php _e( "Content", "flight-info-alert" ); ?></label>
+				<input type="text" class="fia-form-control" id="content" name="content" value="<?php echo $data[ 'content' ]; ?>">
+				<div class="fia-help-block"><?php _e("Additional data is included in the API response in the <strong>Premium Content group</strong>.", "flight-info-alert"); ?></div>
 			</div>
 			<div class="fia-form-group">
-				<label for="departureDate">Departure Date</label>
-				<input type="date" class="fia-form-control" id="departureDate" name="departureDate" value="<?php echo $fields[ 'departureDate' ]; ?>">
+				<label for="departureDate"><?php _e( "Departure Date", "flight-info-alert" ); ?></label>
+				<input type="date" class="fia-form-control" id="departureDate" name="departureDate" value="<?php echo $data[ 'departureDate' ]; ?>">
 			</div>
 		<?php
 	}
@@ -249,37 +254,54 @@ class Flight_Info_Alert_Admin {
 		if( defined( "DOING_AUTOSAVE" ) && DOING_AUTOSAVE )
 			return $post_id;
 
-		if( $data = get_option( $this->plugin_name . '-data' ) ) {
-			if( isset( $data[ 'api_key' ] ) && isset( $data[ 'account_id' ] ) ) {
-				
-				// if( 1 ) {
+		$data = array(
+			'accountId'        => '',
+			'alertId'          => '',
+			'description'      => '',
+			'iataCarrierCode'  => '',
+			'iataCarrierCode'  => '',
+			'icaoCarrierCode'  => '',
+			'flightNumber'     => '',
+			'fromFlight'       => '',
+			'toFlight'         => '',
+			'departureAirport' => '',
+			'arrivalAirport'   => '',
+			'departureDate'    => '',
+			'alertType'        => '',
+			'active'           => '',
+			'content'          => '',
+		);
 
+		foreach( $data as $key => $value ) {
+			$data[ $key ] = isset( $_POST[ $key ] ) ? esc_attr( $_POST[ $key ] ) : '';
+		}
 
-				// 	// if( 2 ) {
-				// 	// 	$fields = array(
-				// 	// 		'description',
-				// 	// 		'iataCarrierCode',
-				// 	// 		'iataCarrierCode',
-				// 	// 		'icaoCarrierCode',
-				// 	// 		'flightNumber',
-				// 	// 		'fromFlight',
-				// 	// 		'toFlight',
-				// 	// 		'departureAirport',
-				// 	// 		'arrivalAirport',
-				// 	// 		'departureDate',
-				// 	// 		'alertType',
-				// 	// 		'active',
-				// 	// 		'content',
-				// 	// 	);
-				
-				// 	// 	foreach( $fields as $field ) {
-				// 	// 		if( isset( $_POST[ $field ] ) ) {
-				// 	// 			update_post_meta( $post_id, $field, esc_attr( $_POST[ $field ] ) );
-				// 	// 		}	
-				// 	// 	}
-				// 	// }
-				// }
-			}
+		$api_key = get_option( 'fia_api_key' );
+		$account_id = get_option( 'fia_account_id' );
+
+		// if( !empty( $api_key ) && !empty( $account_id ) ) {
+
+		// 	$baseUrl = 'https://api.oag.com/flight-info-alerts/alerts?version=v1';
+		// 	$response = wp_remote_post( $baseUrl, array(
+		// 		'headers' => array(
+		// 			'Content-Type' 	   => 'application/json',
+		// 			'Cache-Control'    => 'no-cache',
+		// 			'Subscription-Key' => $api_key,
+		// 		),
+		// 		'body' => $data,
+		// 	) );
+
+		// 	update_post_meta( $post_id, 'response', $response['body'] );
+
+		// 	// if ( ( !is_wp_error( $response ) ) && ( 201 === wp_remote_retrieve_response_code( $response ) ) ) {
+		// 	// 	foreach( $data as $key => $value ) {
+		// 	// 		update_post_meta( $post_id, $key, $value );
+		// 	// 	}
+		// 	// }
+		// }
+
+		foreach( $data as $key => $value ) {
+			update_post_meta( $post_id, $key, gettype($value) );
 		}
 	}
 
@@ -295,33 +317,27 @@ class Flight_Info_Alert_Admin {
 	}
 
 	public function admin_menu_settings() {
-		//section name, display name, callback to print description of section, page to which section is attached.
-        add_settings_section("header_section", "Header Options", array( $this, 'display_header_options_content' ), "theme-options");
-
-        //setting name, display name, callback to print form element, page in which field is displayed, section to which it belongs.
-        //last field section is optional.
-        add_settings_field("header_logo", "Logo Url", array( $this, 'display_logo_form_element' ), "theme-options", "header_section");
-        add_settings_field("advertising_code", "Ads Code", array( $this, 'display_ads_form_element' ), "theme-options", "header_section");
-
-        //section name, form element name, callback for sanitization
-        register_setting("header_section", "header_logo");
-        register_setting("header_section", "advertising_code");
+        add_settings_section("fia_api_section", null, null, "fia-settings");
+        
+		add_settings_field("fia_api_key", __( "API key", "flight-info-alert" ), array( $this, 'api_key_html' ), "fia-settings", "fia_api_section");
+        add_settings_field("fia_account_id", __( "Account ID", "flight-info-alert" ), array( $this, 'account_id_html' ), "fia-settings", "fia_api_section");
+        add_settings_field("fia_fetch_alerts", __( "Fetch alerts", "flight-info-alert" ), array( $this, 'fetch_alert_html' ), "fia-settings", "fia_api_section");
+        
+		register_setting("fia_api_section", "fia_api_key");
+        register_setting("fia_api_section", "fia_account_id");
 	}
 
-	function display_header_options_content(){echo "The header of the theme";}
-    function display_logo_form_element()
-    {
-        //id and name of form element should be same as the setting name.
-        ?>
-            <input type="text" name="header_logo" id="header_logo" value="<?php echo get_option('header_logo'); ?>" />
-        <?php
+    public function api_key_html() {
+        echo '<input type="password" name="fia_api_key" id="fia_api_key" value="'. get_option('fia_api_key') .'">';
     }
-    function display_ads_form_element()
-    {
-        //id and name of form element should be same as the setting name.
-        ?>
-            <input type="text" name="advertising_code" id="advertising_code" value="<?php echo get_option('advertising_code'); ?>" />
-        <?php
+
+    public function account_id_html() {
+		echo '<input type="password" name="fia_account_id" id="fia_account_id" value="'. get_option('fia_account_id') .'">';
+	}
+
+    public function fetch_alert_html() {
+		echo '<button type="button" class="button" id="fetch-alerts">'. __("Fetch my alerts", "flight-info-alert") .'</button>';
+		echo '<p class="description">'. __('It will delete all of your local alerts and fetch latest alerts from <a href="https://www.oag.com/flight-info-alerts" target="_blank">oag</a>.', "flight-info-alert") .'</p>';
 	}
 
 	public function settings_page() {
@@ -330,13 +346,8 @@ class Flight_Info_Alert_Admin {
 				<h1><?php echo $GLOBALS['title'] ?></h1>
 				<form method="POST" action="options.php">
 					<?php
-						//add_settings_section callback is displayed here. For every new section we need to call settings_fields.
-						settings_fields("header_section");
-                   
-						// all the add_settings_field callbacks is displayed here
-						do_settings_sections("theme-options");
-				   
-						// Add the submit button to serialize the options
+						settings_fields("fia_api_section");
+						do_settings_sections("fia-settings");
 						submit_button();
 					?>
 				</form>
@@ -344,5 +355,71 @@ class Flight_Info_Alert_Admin {
 		
 		<?php
     }
+
+	public function fetch_alerts() {
+
+		check_ajax_referer( $this->plugin_name, 'security' );
+
+		$baseUrl = 'https://api.oag.com/flight-info-alerts/alerts?version=v1';
+		$response = wp_remote_get( $baseUrl, array(
+			'headers' => array(
+				'Accept'           => 'application/json',
+				'Cache-Control'    => 'no-cache',
+				'Subscription-Key' => get_option( 'fia_api_key' ),
+				'accountId'        => get_option( 'fia_account_id' ),
+			)
+		) );
+
+		$responseBody = wp_remote_retrieve_body( $response );
+		$result = json_decode( $responseBody );
+
+		if ( ( !is_wp_error( $response ) ) && ( 200 === wp_remote_retrieve_response_code( $response ) ) ) {
+
+			$posts = get_posts( array( 'post_type' => 'fia', 'numberposts' => -1 ) );
+			foreach ( $posts as $post ) {
+				wp_delete_post( $post->ID, true );
+			}
+
+			foreach( $result as $alert ) {
+				$args = array(
+					'post_type'   => 'fia',
+					'post_status' => 'publish',
+					'post_author' => get_current_user_id(),
+					'meta_input'  => array()
+				);
+
+				$args[ 'post_title' ] = isset( $alert->name ) ? $alert->name : '';
+				$args[ 'meta_input' ][ 'accountId' ] = isset( $alert->accountId ) ? $alert->accountId : get_option( 'fia_account_id' );
+				$args[ 'meta_input' ][ 'alertId' ] = isset( $alert->alertId ) ? $alert->alertId : '';
+				$args[ 'meta_input' ][ 'description' ] = isset( $alert->description ) ? $alert->description : '';
+				$args[ 'meta_input' ][ 'iataCarrierCode' ] = isset( $alert->iataCarrierCode ) ? $alert->iataCarrierCode : '';
+				$args[ 'meta_input' ][ 'icaoCarrierCode' ] = isset( $alert->icaoCarrierCode ) ? $alert->icaoCarrierCode : '';
+				$args[ 'meta_input' ][ 'flightNumber' ] = isset( $alert->flightNumber ) ? $alert->flightNumber : '';
+				$args[ 'meta_input' ][ 'fromFlight' ] = isset( $alert->fromFlight ) ? $alert->fromFlight : '';
+				$args[ 'meta_input' ][ 'toFlight' ] = isset( $alert->toFlight ) ? $alert->toFlight : '';
+				$args[ 'meta_input' ][ 'departureAirport' ] = isset( $alert->departureAirport ) ? $alert->departureAirport : '';
+				$args[ 'meta_input' ][ 'arrivalAirport' ] = isset( $alert->arrivalAirport ) ? $alert->arrivalAirport : '';
+				$args[ 'meta_input' ][ 'alertType' ] = isset( $alert->alertType ) ? $alert->alertType : '';
+				$args[ 'meta_input' ][ 'active' ] = isset( $alert->active ) ? ( $alert->active ) == 1 ? true : false : '';
+				$args[ 'meta_input' ][ 'content' ] = isset( $alert->content ) ? $alert->content : '';
+				$args[ 'meta_input' ][ 'departureDate' ] = isset( $alert->departureDate ) ? $alert->departureDate : '';
+
+				wp_insert_post( $args );
+			}
+
+			wp_send_json( array(
+				'success'	=> true,
+				'message' 	=> __( 'Successfully fetched', 'flight-info-alert' )
+			) );
+		} else {
+
+			wp_send_json( array(
+				'success'	=> false,
+				'message' 	=> $result->message ?? __( 'We could not fetch data for you at this time. Try again later.', 'flight-info-alert' )
+			) );
+		}
+
+		die();
+	}
 
 }
