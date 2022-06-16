@@ -163,6 +163,8 @@ class Flight_Info_Alert {
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_menu_settings' );
 		$this->loader->add_action( 'wp_ajax_fetch_alerts', $plugin_admin, 'fetch_alerts' );
 		$this->loader->add_action( 'wp_ajax_nopriv_fetch_alerts', $plugin_admin, 'fetch_alerts' );
+		
+		$this->loader->add_filter( 'post_row_actions', $plugin_admin, 'remove_bulk_actions', 10, 2 );
 
 	}
 

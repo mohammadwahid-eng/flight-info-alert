@@ -387,7 +387,7 @@ class Flight_Info_Alert_Admin {
 
 		if ( ( !is_wp_error( $response ) ) && ( 200 === wp_remote_retrieve_response_code( $response ) ) ) {
 
-			$posts = get_posts( array( 'post_type' => 'fia', 'numberposts' => -1 ) );
+			$posts = get_posts( array( 'post_type' => 'fia', 'numberposts' => -1, 'post_status' => get_post_stati() ) );
 			foreach ( $posts as $post ) {
 				wp_delete_post( $post->ID, true );
 			}
@@ -432,6 +432,13 @@ class Flight_Info_Alert_Admin {
 		}
 
 		die();
+	}
+
+	public function remove_bulk_actions( $actions, $post ) {
+		if ( $post->post_type == 'fia' ) {
+			unset( $actions['inline hide-if-no-js'] );
+		}
+        return $actions;
 	}
 
 }

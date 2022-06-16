@@ -13,7 +13,7 @@
 	$(document).on('click', '#fetch-alerts', function(e) {
 		e.preventDefault();
 
-		if( ! confirm( "Are you sure?" ) ) return;
+		if( ! confirm( "It will delete all your local alerts. Do you want to continue?" ) ) return;
 
 		let btn = $(this),
 			btnText = btn.text();
