@@ -23,3 +23,7 @@
     font-size: 90%;
     font-style: italic;
 }
+
+.fia-text-uppercase {
+    text-transform: uppercase;
+}

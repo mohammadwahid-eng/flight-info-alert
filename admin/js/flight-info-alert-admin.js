@@ -1,6 +1,15 @@
 (function( $ ) {
 	'use strict';
 
+	$(document).on('keyup', 'input[type=number].fia-form-control', function(e) {
+		let maxlength = $(this).attr('maxlength');
+		if (typeof maxlength !== 'undefined' && maxlength !== false) {
+			if( $(this).val().length ) {
+				$(this).val( $(this).val().substr(0, maxlength) );
+			}
+		}
+	});
+
 	$(document).on('click', '#fetch-alerts', function(e) {
 		e.preventDefault();
 
