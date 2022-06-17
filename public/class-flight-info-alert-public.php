@@ -167,8 +167,8 @@ class Flight_Info_Alert_Public {
 					$html .= '<th>Departure Date</th>';
 					$html .= '<th>IATA Carrier Code</th>';
 					$html .= '<th>ICAO Carrier Code</th>';
-					$html .= '<th>Content</th>';
 					$html .= '<th>Description</th>';
+					$html .= '<th>Last Update</th>';
 				$html .= '</tr>';
 			$html .= '</thead>';
 			$html .= '<tbody></tbody>';

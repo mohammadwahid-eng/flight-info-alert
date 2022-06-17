@@ -30,8 +30,8 @@
             { data: 'departureDate' },
             { data: 'iataCarrierCode' },
             { data: 'icaoCarrierCode' },
-            { data: 'content' },
             { data: 'description' },
+            { data: 'lastUpdatedTimestamp' },
         ],
     });
 

@@ -180,7 +180,6 @@ class Flight_Info_Alert_Admin {
 			'departureDate'    => '',
 			'alertType'        => '',
 			'active'           => '',
-			'content'          => '',
 		);
 
 		foreach( $data as $key => $value ) {
@@ -254,11 +253,6 @@ class Flight_Info_Alert_Admin {
 				</select>
 			</div>
 			<div class="fia-form-group">
-				<label for="content"><?php _e( "Content", "flight-info-alert" ); ?></label>
-				<input type="text" class="fia-form-control" id="content" name="content" value="<?php echo $data[ 'content' ]; ?>">
-				<div class="fia-help-block"><?php _e("Additional data is included in the API response in the <strong>Premium Content group</strong>.", "flight-info-alert"); ?></div>
-			</div>
-			<div class="fia-form-group">
 				<label for="departureDate"><?php _e( "Departure Date", "flight-info-alert" ); ?></label>
 				<input type="date" class="fia-form-control" id="departureDate" name="departureDate" value="<?php echo $data[ 'departureDate' ]; ?>">
 			</div>
@@ -290,7 +284,6 @@ class Flight_Info_Alert_Admin {
 			'departureDate'    => '',
 			'alertType'        => '',
 			'active'           => '',
-			'content'          =>  '',
 		);
 
 		foreach( array_keys( $data ) as $key ) {
@@ -440,7 +433,6 @@ class Flight_Info_Alert_Admin {
 						$args[ 'meta_input' ][ 'active' ] = $alert->active == 1 ? true : false;
 					}
 
-					$args[ 'meta_input' ][ 'content' ] = isset( $alert->content ) ? $alert->content : '';
 					$args[ 'meta_input' ][ 'departureDate' ] = isset( $alert->departureDate ) ? $alert->departureDate : '';
 
 					wp_insert_post( $args );
