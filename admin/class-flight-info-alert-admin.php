@@ -305,6 +305,7 @@ class Flight_Info_Alert_Admin {
 
 			// store last api response
 			update_post_meta( $post_id, 'fia_response', $result );
+			unset( $data[ 'accountId' ] );
 
 			// alert created
 			if( isset( $result->data ) ) {
@@ -405,7 +406,6 @@ class Flight_Info_Alert_Admin {
 					);
 
 					$args[ 'post_title' ] = isset( $alert->name ) ? $alert->name : '';
-					$args[ 'meta_input' ][ 'accountId' ] = isset( $alert->accountId ) ? $alert->accountId : get_option( 'fia_account_id' );
 					$args[ 'meta_input' ][ 'alertId' ] = isset( $alert->alertId ) ? $alert->alertId : '';
 					$args[ 'meta_input' ][ 'description' ] = isset( $alert->description ) ? $alert->description : '';
 					$args[ 'meta_input' ][ 'iataCarrierCode' ] = isset( $alert->iataCarrierCode ) ? $alert->iataCarrierCode : '';
@@ -416,7 +416,11 @@ class Flight_Info_Alert_Admin {
 					$args[ 'meta_input' ][ 'departureAirport' ] = isset( $alert->departureAirport ) ? $alert->departureAirport : '';
 					$args[ 'meta_input' ][ 'arrivalAirport' ] = isset( $alert->arrivalAirport ) ? $alert->arrivalAirport : '';
 					$args[ 'meta_input' ][ 'alertType' ] = isset( $alert->alertType ) ? $alert->alertType : '';
-					$args[ 'meta_input' ][ 'active' ] = isset( $alert->active ) ? ( $alert->active ) == 1 ? true : false : '';
+
+					if( isset( $alert->active ) ) {
+						$args[ 'meta_input' ][ 'active' ] = $alert->active == 1 ? true : false;
+					}
+
 					$args[ 'meta_input' ][ 'content' ] = isset( $alert->content ) ? $alert->content : '';
 					$args[ 'meta_input' ][ 'departureDate' ] = isset( $alert->departureDate ) ? $alert->departureDate : '';
 
