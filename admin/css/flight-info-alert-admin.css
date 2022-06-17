@@ -27,3 +27,19 @@
 .fia-text-uppercase {
     text-transform: uppercase;
 }
+
+.fia-errors {
+    color: #d63638;
+}
+
+.fia-errors p {
+    font-size: 16px;
+    margin-bottom: 0;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+.fia-errors ul {
+    margin: 8px 0 0 12px;
+    list-style: disc;
+}

@@ -147,6 +147,25 @@ class Flight_Info_Alert_Admin {
 	}
 
 	public function fia_metabox_html( $post ) {
+
+		$api_response = get_post_meta( $post->ID, 'fia_response', true );
+		if( isset( $api_response->problemdetails ) ) {
+			$html = '';
+			$html .= '<div class="fia-errors">';
+				$html .= '<p>' . __( "API request failed due to the following reasones." ) . '</p>';
+				$html .= '<ul>';
+					$html .= '<li>' . $api_response->problemdetails->message . '</li>';
+					if( isset( $api_response->problemdetails->subErrors ) ) {
+						foreach( $api_response->problemdetails->subErrors as $error ) {
+							$html .= '<li>' . $error->message . '</li>';
+						}
+					}
+					$html .= '</ul>';
+			$html .= '</div>';
+
+			echo $html;
+		}
+
 		$data = array(
 			'alertId'          => '',
 			'description'      => '',
@@ -161,7 +180,7 @@ class Flight_Info_Alert_Admin {
 			'departureDate'    => '',
 			'alertType'        => '',
 			'active'           => '',
-			'content'          => 'seats',
+			'content'          => '',
 		);
 
 		foreach( $data as $key => $value ) {
@@ -429,7 +448,7 @@ class Flight_Info_Alert_Admin {
 
 				wp_send_json( array(
 					'success'	=> true,
-					'message' 	=> __( 'Successfully fetched', 'flight-info-alert' )
+					'message' 	=> __( count( $result ) . ' alerts have been fetched', 'flight-info-alert' )
 				) );
 			} else {
 
