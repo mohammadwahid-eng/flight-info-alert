@@ -381,7 +381,7 @@ class Flight_Info_Alert_Admin {
 		<?php
     }
 
-	public function fetch_alerts() {
+	public function fia_fetch_alerts_admin() {
 
 		check_ajax_referer( $this->plugin_name, 'security' );
 

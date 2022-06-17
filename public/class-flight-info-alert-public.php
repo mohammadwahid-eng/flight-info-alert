@@ -99,16 +99,16 @@ class Flight_Info_Alert_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.min.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'js/dataTables.responsive.min.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'js/dataTables.buttons.min.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name . '-dt-column', plugin_dir_url( __FILE__ ) . 'js/buttons.colVis.min.js', array( 'jquery' ), $this->version, false );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/flight-info-alert-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'js/dataTables.responsive.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'js/dataTables.buttons.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt-column', plugin_dir_url( __FILE__ ) . 'js/buttons.colVis.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/flight-info-alert-public.js', array( 'jquery' ), $this->version, true );
 		wp_localize_script( $this->plugin_name, 'fia_api', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce( $this->plugin_name ) ) );
 
 	}
 
-	public function fetch_alerts() {
+	public function fia_fetch_alerts() {
 		check_ajax_referer( $this->plugin_name, 'security' );
 
 		$api_key = get_option( 'fia_api_key' );
@@ -153,7 +153,7 @@ class Flight_Info_Alert_Public {
 
 	public function flight_info_alerts_html() {
 		$html = '';
-		$html .= '<table class="fia_table" class="display responsive nowrap" style="width:100%">';
+		$html .= '<table class="fia_table display responsive nowrap" style="width:100%">';
 			$html .= '<thead>';
 				$html .= '<tr>';
 					$html .= '<th>Name</th>';

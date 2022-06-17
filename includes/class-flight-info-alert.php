@@ -163,8 +163,8 @@ class Flight_Info_Alert {
 		$this->loader->add_action( 'save_post_fia', $plugin_admin, 'custom_post_save', );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu_page' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'admin_menu_settings' );
-		$this->loader->add_action( 'wp_ajax_fetch_alerts', $plugin_admin, 'fetch_alerts' );
-		$this->loader->add_action( 'wp_ajax_nopriv_fetch_alerts', $plugin_admin, 'fetch_alerts' );
+		$this->loader->add_action( 'wp_ajax_fia_fetch_alerts_admin', $plugin_admin, 'fia_fetch_alerts_admin' );
+		$this->loader->add_action( 'wp_ajax_nopriv_fia_fetch_alerts_admin', $plugin_admin, 'fia_fetch_alerts_admin' );
 		$this->loader->add_action( 'wp_trash_post', $plugin_admin, 'delete_alert' );
 
 	}
@@ -183,8 +183,8 @@ class Flight_Info_Alert {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
-		$this->loader->add_action( 'wp_ajax_fetch_alerts', $plugin_public, 'fetch_alerts' );
-		$this->loader->add_action( 'wp_ajax_nopriv_fetch_alerts', $plugin_public, 'fetch_alerts' );
+		$this->loader->add_action( 'wp_ajax_fia_fetch_alerts', $plugin_public, 'fia_fetch_alerts' );
+		$this->loader->add_action( 'wp_ajax_nopriv_fia_fetch_alerts', $plugin_public, 'fia_fetch_alerts' );
 
 	}
 

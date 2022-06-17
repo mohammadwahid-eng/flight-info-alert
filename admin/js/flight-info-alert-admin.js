@@ -24,7 +24,7 @@
 			dataType: "json",
 			url: fia_api_fetch.ajaxurl,
 			data: {
-				action: "fetch_alerts",
+				action: "fia_fetch_alerts_admin",
 				security: fia_api_fetch.nonce
 			},
 			success: function( response ) {

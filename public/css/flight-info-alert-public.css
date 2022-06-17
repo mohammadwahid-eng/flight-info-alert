@@ -26,3 +26,28 @@
     text-transform: capitalize;
     font-size: .75em;
 }
+
+div.dt-button-collection button.dt-button:active:not(.disabled),
+div.dt-button-collection button.dt-button.active:not(.disabled),
+div.dt-button-collection div.dt-button:active:not(.disabled),
+div.dt-button-collection div.dt-button.active:not(.disabled),
+div.dt-button-collection a.dt-button:active:not(.disabled),
+div.dt-button-collection a.dt-button.active:not(.disabled) {
+    color: black;
+}
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control,
+table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control {
+    padding-left: 45px;
+}
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before, table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before {
+    margin-top: 0;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+table.dataTable>tbody>tr.child ul.dtr-details {
+    display: block;
+}

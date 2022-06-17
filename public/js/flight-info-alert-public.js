@@ -1,7 +1,7 @@
 (function( $ ) {
 	'use strict';
 
-	const alertTable = $('.fia_table').DataTable({
+	const fiaAlertTable = $('.fia_table').DataTable({
         dom: '<"fia_dataTables_head"Bf><"fia_dataTables_body"tip>',
         buttons: [
             {
@@ -14,29 +14,66 @@
             url: fia_api.ajaxurl,
             type: 'POST',
             data: {
-                action: 'fetch_alerts',
-                security: fia_api.nonce,
+               action: 'fia_fetch_alerts',
+               security: fia_api.nonce,
             }
         },
         columns: [
-            { data: 'name' },
-            { data: 'alertType' },
-            { data: 'active' },
-            { data: 'flightNumber' },
-            { data: 'fromFlight' },
-            { data: 'toFlight' },
-            { data: 'departureAirport' },
-            { data: 'arrivalAirport' },
-            { data: 'departureDate' },
-            { data: 'iataCarrierCode' },
-            { data: 'icaoCarrierCode' },
-            { data: 'description' },
-            { data: 'lastUpdatedTimestamp' },
+            { data: 'name', defaultContent: '-' },
+            {
+				data: 'alertType',
+				defaultContent: '-',
+				render: function ( data ) {
+					const tempData = data;
+					return data?.charAt(0).toUpperCase() + tempData?.slice(1);
+				}
+			},
+            {
+				data: 'active',
+				defaultContent: '-',
+				render: function ( data ) {
+					return data == true ? 'Yes' : 'No';
+				}
+			},
+            { data: 'flightNumber', defaultContent: '-' },
+            { data: 'fromFlight', defaultContent: '-' },
+            { data: 'toFlight', defaultContent: '-' },
+            {
+				data: 'departureAirport',
+				defaultContent: '-',
+				render: function ( data ) {
+					return data?.toUpperCase();
+				}
+			},
+            {
+				data: 'arrivalAirport',
+				defaultContent: '-',
+				render: function ( data ) {
+					return data?.toUpperCase();
+				}
+			},
+            { data: 'departureDate', defaultContent: '-' },
+            {
+				data: 'iataCarrierCode',
+				defaultContent: '-',
+				render: function ( data ) {
+					return data?.toUpperCase();
+				}
+			},
+            {
+				data: 'icaoCarrierCode',
+				defaultContent: '-',
+				render: function ( data ) {
+					return data?.toUpperCase();
+				}
+			},
+            { data: 'description', defaultContent: '-' },
+            { data: 'lastUpdatedTimestamp', defaultContent: '-' },
         ],
     });
 
-    // setInterval( function() {
-    //     alertTable.ajax.reload( null, false );
-    // }, 30 * 1000 );
+    setInterval( function() {
+        fiaAlertTable.ajax.reload( null, false );
+    }, 30 * 1000 );
 
 })( jQuery );
