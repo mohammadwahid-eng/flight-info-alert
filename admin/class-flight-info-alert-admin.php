@@ -372,62 +372,72 @@ class Flight_Info_Alert_Admin {
 
 		check_ajax_referer( $this->plugin_name, 'security' );
 
-		$baseUrl = 'https://api.oag.com/flight-info-alerts/alerts?version=v1';
-		$response = wp_remote_get( $baseUrl, array(
-			'headers' => array(
-				'Accept'           => 'application/json',
-				'Cache-Control'    => 'no-cache',
-				'Subscription-Key' => get_option( 'fia_api_key' ),
-				'accountId'        => get_option( 'fia_account_id' ),
-			)
-		) );
+		$api_key = get_option( 'fia_api_key' );
+		$account_id = get_option( 'fia_account_id' );
 
-		$responseBody = wp_remote_retrieve_body( $response );
-		$result = json_decode( $responseBody );
-
-		if ( ( !is_wp_error( $response ) ) && ( 200 === wp_remote_retrieve_response_code( $response ) ) ) {
-
-			$posts = get_posts( array( 'post_type' => 'fia', 'numberposts' => -1, 'post_status' => get_post_stati() ) );
-			foreach ( $posts as $post ) {
-				wp_delete_post( $post->ID, true );
-			}
-
-			foreach( $result as $alert ) {
-				$args = array(
-					'post_type'   => 'fia',
-					'post_status' => 'publish',
-					'post_author' => get_current_user_id(),
-					'meta_input'  => array()
-				);
-
-				$args[ 'post_title' ] = isset( $alert->name ) ? $alert->name : '';
-				$args[ 'meta_input' ][ 'accountId' ] = isset( $alert->accountId ) ? $alert->accountId : get_option( 'fia_account_id' );
-				$args[ 'meta_input' ][ 'alertId' ] = isset( $alert->alertId ) ? $alert->alertId : '';
-				$args[ 'meta_input' ][ 'description' ] = isset( $alert->description ) ? $alert->description : '';
-				$args[ 'meta_input' ][ 'iataCarrierCode' ] = isset( $alert->iataCarrierCode ) ? $alert->iataCarrierCode : '';
-				$args[ 'meta_input' ][ 'icaoCarrierCode' ] = isset( $alert->icaoCarrierCode ) ? $alert->icaoCarrierCode : '';
-				$args[ 'meta_input' ][ 'flightNumber' ] = isset( $alert->flightNumber ) ? $alert->flightNumber : '';
-				$args[ 'meta_input' ][ 'fromFlight' ] = isset( $alert->fromFlight ) ? $alert->fromFlight : '';
-				$args[ 'meta_input' ][ 'toFlight' ] = isset( $alert->toFlight ) ? $alert->toFlight : '';
-				$args[ 'meta_input' ][ 'departureAirport' ] = isset( $alert->departureAirport ) ? $alert->departureAirport : '';
-				$args[ 'meta_input' ][ 'arrivalAirport' ] = isset( $alert->arrivalAirport ) ? $alert->arrivalAirport : '';
-				$args[ 'meta_input' ][ 'alertType' ] = isset( $alert->alertType ) ? $alert->alertType : '';
-				$args[ 'meta_input' ][ 'active' ] = isset( $alert->active ) ? ( $alert->active ) == 1 ? true : false : '';
-				$args[ 'meta_input' ][ 'content' ] = isset( $alert->content ) ? $alert->content : '';
-				$args[ 'meta_input' ][ 'departureDate' ] = isset( $alert->departureDate ) ? $alert->departureDate : '';
-
-				wp_insert_post( $args );
-			}
-
-			wp_send_json( array(
-				'success'	=> true,
-				'message' 	=> __( 'Successfully fetched', 'flight-info-alert' )
+		if( $api_key && $account_id ) {
+			$baseUrl = 'https://api.oag.com/flight-info-alerts/alerts?version=v1';
+			$response = wp_remote_get( $baseUrl, array(
+				'headers' => array(
+					'Accept'           => 'application/json',
+					'Cache-Control'    => 'no-cache',
+					'Subscription-Key' => $api_key,
+					'accountId'        => $account_id,
+				)
 			) );
-		} else {
 
+			$responseBody = wp_remote_retrieve_body( $response );
+			$result = json_decode( $responseBody );
+
+			if ( ( !is_wp_error( $response ) ) && ( 200 === wp_remote_retrieve_response_code( $response ) ) ) {
+
+				$posts = get_posts( array( 'post_type' => 'fia', 'numberposts' => -1, 'post_status' => get_post_stati() ) );
+				foreach ( $posts as $post ) {
+					wp_delete_post( $post->ID, true );
+				}
+
+				foreach( $result as $alert ) {
+					$args = array(
+						'post_type'   => 'fia',
+						'post_status' => 'publish',
+						'post_author' => get_current_user_id(),
+						'meta_input'  => array()
+					);
+
+					$args[ 'post_title' ] = isset( $alert->name ) ? $alert->name : '';
+					$args[ 'meta_input' ][ 'accountId' ] = isset( $alert->accountId ) ? $alert->accountId : get_option( 'fia_account_id' );
+					$args[ 'meta_input' ][ 'alertId' ] = isset( $alert->alertId ) ? $alert->alertId : '';
+					$args[ 'meta_input' ][ 'description' ] = isset( $alert->description ) ? $alert->description : '';
+					$args[ 'meta_input' ][ 'iataCarrierCode' ] = isset( $alert->iataCarrierCode ) ? $alert->iataCarrierCode : '';
+					$args[ 'meta_input' ][ 'icaoCarrierCode' ] = isset( $alert->icaoCarrierCode ) ? $alert->icaoCarrierCode : '';
+					$args[ 'meta_input' ][ 'flightNumber' ] = isset( $alert->flightNumber ) ? $alert->flightNumber : '';
+					$args[ 'meta_input' ][ 'fromFlight' ] = isset( $alert->fromFlight ) ? $alert->fromFlight : '';
+					$args[ 'meta_input' ][ 'toFlight' ] = isset( $alert->toFlight ) ? $alert->toFlight : '';
+					$args[ 'meta_input' ][ 'departureAirport' ] = isset( $alert->departureAirport ) ? $alert->departureAirport : '';
+					$args[ 'meta_input' ][ 'arrivalAirport' ] = isset( $alert->arrivalAirport ) ? $alert->arrivalAirport : '';
+					$args[ 'meta_input' ][ 'alertType' ] = isset( $alert->alertType ) ? $alert->alertType : '';
+					$args[ 'meta_input' ][ 'active' ] = isset( $alert->active ) ? ( $alert->active ) == 1 ? true : false : '';
+					$args[ 'meta_input' ][ 'content' ] = isset( $alert->content ) ? $alert->content : '';
+					$args[ 'meta_input' ][ 'departureDate' ] = isset( $alert->departureDate ) ? $alert->departureDate : '';
+
+					wp_insert_post( $args );
+				}
+
+				wp_send_json( array(
+					'success'	=> true,
+					'message' 	=> __( 'Successfully fetched', 'flight-info-alert' )
+				) );
+			} else {
+
+				wp_send_json( array(
+					'success'	=> false,
+					'message' 	=> $result->message ?? __( 'We could not fetch data for you at this time. Try again later.', 'flight-info-alert' )
+				) );
+			}	
+		} else {
 			wp_send_json( array(
 				'success'	=> false,
-				'message' 	=> $result->message ?? __( 'We could not fetch data for you at this time. Try again later.', 'flight-info-alert' )
+				'message' 	=> __( 'Please enter and save the required data first.', 'flight-info-alert' )
 			) );
 		}
 
@@ -437,8 +447,32 @@ class Flight_Info_Alert_Admin {
 	public function remove_bulk_actions( $actions, $post ) {
 		if ( $post->post_type == 'fia' ) {
 			unset( $actions['inline hide-if-no-js'] );
+			$actions['trash'] = str_replace( 'Trash', 'Delete', $actions['trash'] );
 		}
         return $actions;
+	}
+
+	public function delete_alert( $post_id ) {
+		global $post_type;
+		if ( 'fia' == $post_type ) {
+			$alertId = get_post_meta( $post_id, 'alertId', true );
+			$api_key = get_option( 'fia_api_key' );
+
+			if( $alertId && $api_key ) {
+				$baseUrl = "https://api.oag.com/flight-info-alerts/alerts/$alertId?version=v1";
+				wp_remote_request( $baseUrl, array(
+					'headers' => array(
+						'Cache-Control'    => 'no-cache',
+						'Subscription-Key' => $api_key,
+					),
+					'method'  => 'DELETE',
+				) );
+			}
+			
+			wp_delete_post( $post_id, true);
+			wp_redirect( admin_url( 'edit.php?post_type=fia' ) );
+			exit();
+		}
 	}
 
 }
