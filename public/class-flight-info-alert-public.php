@@ -74,8 +74,8 @@ class Flight_Info_Alert_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'css/jquery.dataTables.min.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'css/buttons.dataTables.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'css/responsive.dataTables.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'css/buttons.dataTables.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/flight-info-alert-public.css', array(), $this->version, 'all' );
 
 	}
@@ -99,10 +99,10 @@ class Flight_Info_Alert_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.min.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'js/dataTables.buttons.min.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name . '-dt-column', plugin_dir_url( __FILE__ ) . 'js/buttons.colVis.min.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'js/dataTables.responsive.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'js/dataTables.responsive.min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'js/dataTables.buttons.min.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-dt-column', plugin_dir_url( __FILE__ ) . 'js/buttons.colVis.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/flight-info-alert-public.js', array( 'jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'fia_api', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce( $this->plugin_name ) ) );
 
