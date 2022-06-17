@@ -182,6 +182,9 @@ class Flight_Info_Alert {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
+		$this->loader->add_action( 'wp_ajax_fetch_alerts', $plugin_public, 'fetch_alerts' );
+		$this->loader->add_action( 'wp_ajax_nopriv_fetch_alerts', $plugin_public, 'fetch_alerts' );
 
 	}
 

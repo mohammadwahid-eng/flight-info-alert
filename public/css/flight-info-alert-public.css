@@ -2,3 +2,27 @@
  * All of the CSS for your public-facing functionality should be
  * included in this file.
  */
+
+ .fia_dataTables_head {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.fia_dataTables_head .dataTables_filter > label {
+    margin: 0;
+    display: flex;
+    gap: 10px;
+    white-space: nowrap;
+    align-items: center;
+}
+
+.fia_dataTables_head .dt-buttons .dt-button {
+    margin: 0;
+    padding: 5px 15px;
+    text-transform: capitalize;
+    font-size: .75em;
+}

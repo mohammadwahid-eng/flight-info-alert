@@ -73,6 +73,9 @@ class Flight_Info_Alert_Public {
 		 * class.
 		 */
 
+		wp_enqueue_style( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'css/jquery.dataTables.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'css/buttons.dataTables.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'css/responsive.dataTables.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/flight-info-alert-public.css', array(), $this->version, 'all' );
 
 	}
@@ -96,8 +99,82 @@ class Flight_Info_Alert_Public {
 		 * class.
 		 */
 
+		wp_enqueue_script( $this->plugin_name . '-dt', plugin_dir_url( __FILE__ ) . 'js/jquery.dataTables.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt-button', plugin_dir_url( __FILE__ ) . 'js/dataTables.buttons.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt-column', plugin_dir_url( __FILE__ ) . 'js/buttons.colVis.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-dt-responsive', plugin_dir_url( __FILE__ ) . 'js/dataTables.responsive.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/flight-info-alert-public.js', array( 'jquery' ), $this->version, false );
+		wp_localize_script( $this->plugin_name, 'fia_api', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'nonce' => wp_create_nonce( $this->plugin_name ) ) );
 
+	}
+
+	public function fetch_alerts() {
+		check_ajax_referer( $this->plugin_name, 'security' );
+
+		$api_key = get_option( 'fia_api_key' );
+		$account_id = get_option( 'fia_account_id' );
+
+		if( $api_key && $account_id ) {
+			$baseUrl = 'https://api.oag.com/flight-info-alerts/alerts?version=v1';
+			$response = wp_remote_get( $baseUrl, array(
+				'headers' => array(
+					'Accept'           => 'application/json',
+					'Cache-Control'    => 'no-cache',
+					'Subscription-Key' => $api_key,
+					'accountId'        => $account_id,
+				)
+			) );
+
+			$responseBody = wp_remote_retrieve_body( $response );
+			$result = json_decode( $responseBody );
+
+			if ( ( !is_wp_error( $response ) ) && ( 200 === wp_remote_retrieve_response_code( $response ) ) ) {
+
+				wp_send_json( array(
+					'success'	=> true,
+					'data' 		=> $result
+				) );
+				
+			} else {
+
+				wp_send_json( array(
+					'success'	=> false,
+					'message' 	=> $result->message ?? __( 'We could not fetch data for you at this time. Try again later.', 'flight-info-alert' )
+				) );
+			}	
+		}
+
+		die();
+	}
+
+	public function register_shortcodes() {
+		add_shortcode( 'flight_info_alerts', array( $this, 'flight_info_alerts_html') );
+	}
+
+	public function flight_info_alerts_html() {
+		$html = '';
+		$html .= '<table class="fia_table" class="display responsive nowrap" style="width:100%">';
+			$html .= '<thead>';
+				$html .= '<tr>';
+					$html .= '<th>Name</th>';
+					$html .= '<th>Alert Type</th>';
+					$html .= '<th>Active</th>';
+					$html .= '<th>Flight Number</th>';
+					$html .= '<th>Flight From</th>';
+					$html .= '<th>Flight To</th>';
+					$html .= '<th>Departure Airport</th>';
+					$html .= '<th>Arrival Airport</th>';
+					$html .= '<th>Departure Date</th>';
+					$html .= '<th>IATA Carrier Code</th>';
+					$html .= '<th>ICAO Carrier Code</th>';
+					$html .= '<th>Content</th>';
+					$html .= '<th>Description</th>';
+				$html .= '</tr>';
+			$html .= '</thead>';
+			$html .= '<tbody></tbody>';
+		$html .= '</table>';
+
+		return $html;
 	}
 
 }
